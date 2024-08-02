@@ -4,6 +4,7 @@ import com.stanbic.redbox.debit.service.dto.TransactionRequest;
 import com.stanbic.redbox.debit.service.dto.response.RedboxResponse;
 import com.stanbic.redbox.debit.service.dto.response.TransactionReceiptResponse;
 import com.stanbic.redbox.debit.service.model.Transaction;
+import com.stanbic.redbox.debit.service.service.ApiService;
 import com.stanbic.redbox.debit.service.service.TransactionService;
 import lombok.RequiredArgsConstructor;
 import lombok.SneakyThrows;
@@ -13,7 +14,6 @@ import org.springframework.http.ResponseEntity;
 import org.springframework.validation.annotation.Validated;
 import org.springframework.web.bind.annotation.*;
 
-import java.net.URISyntaxException;
 import java.net.http.HttpResponse;
 import java.time.LocalDate;
 import java.util.List;
@@ -22,8 +22,9 @@ import java.util.List;
 @RequiredArgsConstructor
 @RequestMapping("/transactions")
 public class TransactionController {
-    @Autowired
-    private TransactionService transactionService;
+//    @Autowired
+    private final TransactionService transactionService;
+    private final ApiService apiService;
 
     @PostMapping
     public ResponseEntity<RedboxResponse> createTransaction(@Validated @RequestBody TransactionRequest transactionRequest) {
@@ -56,7 +57,9 @@ public class TransactionController {
 
     @SneakyThrows
     @GetMapping("/api")
-    public HttpResponse api ()  {
-        return transactionService.doHttpRequest("https://postman-echo.com/get");
+    public ResponseEntity<?> api ()  {
+//        String a = "hj";
+        return ResponseEntity.ok(apiService.postApiResponse("https://freetestapi.com/api/v1/actors/1"));
+//        return transactionService.doHttpRequest("https://postman-echo.com/get");
     }
 }
