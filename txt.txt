@@ -1,0 +1,6 @@
+API_KEY = MK_TEST_GVH2FN5Y04
+SECRET_KEY = U680V4QSJWBSWG8JKFT8SYTC7YH6Y8K8
+BASE_URL = https://sandbox.monnify.com
+WALLET ACCOUNT NUMBER = 4274612931
+
+https://developers.monnify.com/api/
