@@ -27,13 +27,9 @@ import java.util.HashMap;
 public class MonnifyService {
     @Value("${monnify.api.base-url}")
     private String baseUrl;
-    @Value("${monnify.api.secret-key}")
-    private String secretKey;
-    @Value("${monnify.api.api-key}")
-    private String apiKey;
 
     private final WebClientService webClientService;
-    private final TransactionReferenceGenerator transactionReferenceGenerator;
+//    private final TransactionReferenceGenerator transactionReferenceGenerator;
 
     private final MonnifyUtils monnifyUtils;
     private String accessToken;
@@ -80,7 +76,7 @@ public class MonnifyService {
 
     @SneakyThrows
     public Object handleInitiateTransfer(TransferRequest transferRequest) {
-//        transferRequest.setReference(transactionReferenceGenerator.g);
+        transferRequest.setReference(TransactionReferenceGenerator.generateReference());
         String url = baseUrl + "/api/v2/disbursements/single";
         String token = handleGetAccessToken();
         String Authorization = "Bearer " + token;
