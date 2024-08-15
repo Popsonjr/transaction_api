@@ -1,5 +1,6 @@
 package com.stanbic.redbox.debit.service.service;
 
+import com.fasterxml.jackson.core.JsonParser;
 import com.fasterxml.jackson.databind.ObjectMapper;
 import com.stanbic.redbox.debit.service.dto.TransferRequest;
 import com.stanbic.redbox.debit.service.enums.ResponseCodes;
@@ -11,6 +12,8 @@ import com.stanbic.redbox.debit.service.util.TransactionReferenceGenerator;
 import lombok.RequiredArgsConstructor;
 import lombok.SneakyThrows;
 import org.springframework.beans.factory.annotation.Value;
+import org.springframework.http.HttpStatus;
+import org.springframework.http.ResponseEntity;
 import org.springframework.stereotype.Service;
 
 import java.io.IOException;
@@ -50,21 +53,13 @@ public class MonnifyService {
         String url = baseUrl + "/api/v1/auth/login";
 
         HashMap<String, Object> payload = new HashMap<>();
-        HttpRequest.Builder builder = HttpRequest.newBuilder();
-        builder.POST(HttpRequest.BodyPublishers.ofString(String.valueOf(payload)));
-        builder.header("Authorization", monnifyUtils.getAuthKey());
-        builder.uri(URI.create(url));
+        ResponseEntity<Object> response = webClientService.postRequest(url, payload, Object.class, monnifyUtils.getAuthKey());
 
-        HttpRequest request = builder
-                .build();
 
-        HttpClient httpClient = HttpClient.newHttpClient();
-        HttpResponse<String> response = httpClient.send(request, HttpResponse.BodyHandlers.ofString());
-
-        if (response.statusCode() != 200 || response.body() == null) {
+        if (response.getStatusCode() != HttpStatus.OK || response.getBody() == null) {
             throw new CustomRuntimeException(ResponseCodes.BAD_REQUEST, "Bad request");
         }
-        AccessTokenResponse accessTokenResponse = objectMapper.readValue(response.body(), AccessTokenResponse.class);
+        AccessTokenResponse accessTokenResponse = objectMapper.convertValue(response.getBody(), AccessTokenResponse.class);
         accessToken = accessTokenResponse.getResponseBody().getAccessToken();
         tokenGenerationTime = Instant.now();
         expiresIn = accessTokenResponse.getResponseBody().getExpiresIn();

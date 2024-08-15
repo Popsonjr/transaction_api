@@ -16,26 +16,21 @@ public class WebClientService {
     @Autowired
     private WebClient webClient;
 
-    public <T> T postRequest(String url, Object requestBody, Class <T> responseType, String authKey) {
+    public <T> ResponseEntity<T> postRequest(String url, Object requestBody, Class <T> responseType, String authKey) {
         try {
-            T returnValue = webClient.post()
+            return webClient.post()
                     .uri(url)
                     .body(Mono.just(requestBody), Object.class)
                     .header("Authorization", authKey)
                     .retrieve()
-                    .bodyToMono(responseType)
+//                    .bodyToMono(responseType)
 //                    .doOnNext(response-> System.out.println("Response: " + response))
+                    .toEntity(responseType)
                     .block();
-
-            return returnValue;
         } catch(WebClientResponseException e) {
-//            System.out.println("Request failed with status code: " + e.getStatusCode());
-//            System.out.println("Response body: " + e.getResponseBodyAsString());
-//            System.out.println(e.getMessage());
             throw new RuntimeException("Error: " + e.getMessage(), e);
 //            return new ResponseEntity<>(new RedboxResponse("99", "Bad Request", e.getMessage()), HttpStatus.BAD_REQUEST);
             } catch (Exception e) {
-//            System.out.println(e.getMessage());
             throw new RuntimeException("Error: " + e.getMessage(), e);
         }
     }
