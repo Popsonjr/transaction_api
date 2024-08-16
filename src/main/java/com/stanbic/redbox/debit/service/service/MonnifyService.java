@@ -2,6 +2,7 @@ package com.stanbic.redbox.debit.service.service;
 
 import com.fasterxml.jackson.core.JsonParser;
 import com.fasterxml.jackson.databind.ObjectMapper;
+import com.stanbic.redbox.debit.service.dto.BulkTransferRequest;
 import com.stanbic.redbox.debit.service.dto.TransferRequest;
 import com.stanbic.redbox.debit.service.enums.ResponseCodes;
 import com.stanbic.redbox.debit.service.exceptions.custom.CustomRuntimeException;
@@ -69,15 +70,25 @@ public class MonnifyService {
         return Duration.between(tokenGenerationTime, Instant.now()).getSeconds() >= expiresIn;
     }
 
+    private String getBearerToken() {
+        String token = handleGetAccessToken();
+        String Authorization = "Bearer " + token;
+        System.out.println(Authorization);
+        return Authorization;
+    }
+
     @SneakyThrows
     public Object handleInitiateTransfer(TransferRequest transferRequest) {
         transferRequest.setReference(TransactionReferenceGenerator.generateReference());
         String url = baseUrl + "/api/v2/disbursements/single";
-        String token = handleGetAccessToken();
-        String Authorization = "Bearer " + token;
-        System.out.println(Authorization);
 
-        return webClientService.postRequest(url, transferRequest, Object.class, Authorization);
+        return webClientService.postRequest(url, transferRequest, Object.class, getBearerToken());
+    }
+
+    public Object handleInitiateBulkTransfer(BulkTransferRequest bulkTransferRequest) {
+        bulkTransferRequest.setBatchReference(TransactionReferenceGenerator.generateReference());
+        String url = baseUrl + "/api/v2/disbursements/batch";
+        return  webClientService.postRequest(url, bulkTransferRequest, Object.class, getBearerToken());
     }
 
 //    public TransactionDetails getTransactionDetails(String transactionReference) {

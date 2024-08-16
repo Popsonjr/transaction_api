@@ -1,5 +1,6 @@
 package com.stanbic.redbox.debit.service.controller;
 
+import com.stanbic.redbox.debit.service.dto.BulkTransferRequest;
 import com.stanbic.redbox.debit.service.dto.TransferRequest;
 import com.stanbic.redbox.debit.service.service.MonnifyService;
 import lombok.RequiredArgsConstructor;
@@ -20,6 +21,11 @@ public class MonnifyController {
     @PostMapping("/initiate-transfer")
     public Object initiateTransfer(@RequestBody TransferRequest transferRequest) {
         return monnifyService.handleInitiateTransfer(transferRequest);
+    }
+
+    @PostMapping("/initiate-bulk-transfer")
+    public Object initiateBulkTransfer(@RequestBody BulkTransferRequest bulkTransferRequest) {
+        return monnifyService.handleInitiateBulkTransfer(bulkTransferRequest);
     }
 
 //    @GetMapping("/transactions/{transactionTReference}")
