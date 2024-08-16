@@ -1,6 +1,6 @@
 package com.stanbic.redbox.debit.service.service;
 
-import com.stanbic.redbox.debit.service.dto.TransactionRequest;
+import com.stanbic.redbox.debit.service.dto.requests.TransactionRequest;
 import com.stanbic.redbox.debit.service.dto.response.TransactionReceiptResponse;
 import com.stanbic.redbox.debit.service.dto.response.TransactionResponse;
 import com.stanbic.redbox.debit.service.enums.ResponseCodes;

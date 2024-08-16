@@ -1,9 +1,9 @@
 package com.stanbic.redbox.debit.service.service;
 
-import com.fasterxml.jackson.core.JsonParser;
 import com.fasterxml.jackson.databind.ObjectMapper;
-import com.stanbic.redbox.debit.service.dto.BulkTransferRequest;
-import com.stanbic.redbox.debit.service.dto.TransferRequest;
+import com.stanbic.redbox.debit.service.dto.requests.AuthorizeSingleTransferRequest;
+import com.stanbic.redbox.debit.service.dto.requests.BulkTransferRequest;
+import com.stanbic.redbox.debit.service.dto.requests.TransferRequest;
 import com.stanbic.redbox.debit.service.enums.ResponseCodes;
 import com.stanbic.redbox.debit.service.exceptions.custom.CustomRuntimeException;
 import com.stanbic.redbox.debit.service.model.monnify.AccessTokenResponse;
@@ -18,13 +18,10 @@ import org.springframework.http.ResponseEntity;
 import org.springframework.stereotype.Service;
 
 import java.io.IOException;
-import java.net.URI;
-import java.net.http.HttpClient;
-import java.net.http.HttpRequest;
-import java.net.http.HttpResponse;
 import java.time.Duration;
 import java.time.Instant;
 import java.util.HashMap;
+import java.util.Objects;
 
 @RequiredArgsConstructor
 @Service
@@ -81,7 +78,6 @@ public class MonnifyService {
     public Object handleInitiateTransfer(TransferRequest transferRequest) {
         transferRequest.setReference(TransactionReferenceGenerator.generateReference());
         String url = baseUrl + "/api/v2/disbursements/single";
-
         return webClientService.postRequest(url, transferRequest, Object.class, getBearerToken());
     }
 
@@ -89,6 +85,12 @@ public class MonnifyService {
         bulkTransferRequest.setBatchReference(TransactionReferenceGenerator.generateReference());
         String url = baseUrl + "/api/v2/disbursements/batch";
         return  webClientService.postRequest(url, bulkTransferRequest, Object.class, getBearerToken());
+    }
+
+    public Object handleAuthorizeSingleTransfers(AuthorizeSingleTransferRequest transferRequest) {
+//        transferRequest.setReference(TransactionReferenceGenerator.generateReference());
+        String url = baseUrl + "/api/v2/disbursements/single/validate-otp";
+        return webClientService.postRequest(url, transferRequest, Objects.class, getBearerToken());
     }
 
 //    public TransactionDetails getTransactionDetails(String transactionReference) {

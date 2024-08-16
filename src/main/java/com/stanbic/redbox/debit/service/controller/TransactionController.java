@@ -1,6 +1,6 @@
 package com.stanbic.redbox.debit.service.controller;
 
-import com.stanbic.redbox.debit.service.dto.TransactionRequest;
+import com.stanbic.redbox.debit.service.dto.requests.TransactionRequest;
 import com.stanbic.redbox.debit.service.dto.response.RedboxResponse;
 import com.stanbic.redbox.debit.service.dto.response.TransactionReceiptResponse;
 import com.stanbic.redbox.debit.service.model.Transaction;
@@ -16,7 +16,6 @@ import org.springframework.validation.annotation.Validated;
 import org.springframework.web.bind.annotation.*;
 import reactor.core.publisher.Mono;
 
-import java.net.http.HttpResponse;
 import java.time.LocalDate;
 import java.util.List;
 
