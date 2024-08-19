@@ -1,6 +1,6 @@
 package com.stanbic.redbox.debit.service.service;
 
-import com.stanbic.redbox.debit.service.dto.response.TransferResonse;
+import com.stanbic.redbox.debit.service.dto.response.TransferResponse;
 import com.stanbic.redbox.debit.service.enums.ResponseCodes;
 import com.stanbic.redbox.debit.service.exceptions.custom.CustomRuntimeException;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -20,7 +20,7 @@ public class WebClientService {
     @Autowired
     private WebClient webClient;
 
-    public <T> ResponseEntity<TransferResonse> authorizeTransferRequest(String url, Object requestBody, String authKey) {
+    public <T> ResponseEntity<TransferResponse> authorizeTransferRequest(String url, Object requestBody, String authKey) {
         try {
             return webClient.post()
                     .uri(url)
@@ -35,7 +35,7 @@ public class WebClientService {
                                     return Mono.error(new CustomRuntimeException(ResponseCodes.BAD_REQUEST, errorBody));
                                 });
                     })
-                    .toEntity(new ParameterizedTypeReference<TransferResonse>() {
+                    .toEntity(new ParameterizedTypeReference<TransferResponse>() {
                     })
                     .block();
         } catch(WebClientResponseException e) {

@@ -1,9 +1,10 @@
 package com.stanbic.redbox.debit.service.service;
 
 import com.fasterxml.jackson.databind.ObjectMapper;
-import com.stanbic.redbox.debit.service.dto.requests.AuthorizeSingleTransferRequest;
+import com.stanbic.redbox.debit.service.dto.requests.AuthorizeTransferRequest;
 import com.stanbic.redbox.debit.service.dto.requests.BulkTransferRequest;
 import com.stanbic.redbox.debit.service.dto.requests.TransferRequest;
+import com.stanbic.redbox.debit.service.dto.response.TransferResponse;
 import com.stanbic.redbox.debit.service.enums.ResponseCodes;
 import com.stanbic.redbox.debit.service.exceptions.custom.CustomRuntimeException;
 import com.stanbic.redbox.debit.service.model.monnify.AccessTokenResponse;
@@ -21,7 +22,6 @@ import java.io.IOException;
 import java.time.Duration;
 import java.time.Instant;
 import java.util.HashMap;
-import java.util.Objects;
 
 @RequiredArgsConstructor
 @Service
@@ -87,8 +87,13 @@ public class MonnifyService {
         return  webClientService.postRequest(url, bulkTransferRequest, Object.class, getBearerToken());
     }
 
-    public Object handleAuthorizeSingleTransfers(AuthorizeSingleTransferRequest transferRequest) {
+    public Object handleAuthorizeSingleTransfers(AuthorizeTransferRequest transferRequest) {
         String url = baseUrl + "/api/v2/disbursements/single/validate-otp";
+        return webClientService.authorizeTransferRequest(url, transferRequest, getBearerToken());
+    }
+
+    public ResponseEntity<TransferResponse> handleAuthorizeBulkTransfer(AuthorizeTransferRequest transferRequest) {
+        String url = baseUrl + "/api/v2/disbursements/batch/validate-otp";
         return webClientService.authorizeTransferRequest(url, transferRequest, getBearerToken());
     }
 
