@@ -88,9 +88,8 @@ public class MonnifyService {
     }
 
     public Object handleAuthorizeSingleTransfers(AuthorizeSingleTransferRequest transferRequest) {
-//        transferRequest.setReference(TransactionReferenceGenerator.generateReference());
         String url = baseUrl + "/api/v2/disbursements/single/validate-otp";
-        return webClientService.postRequest(url, transferRequest, Objects.class, getBearerToken());
+        return webClientService.authorizeTransferRequest(url, transferRequest, getBearerToken());
     }
 
 //    public TransactionDetails getTransactionDetails(String transactionReference) {

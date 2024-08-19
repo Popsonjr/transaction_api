@@ -29,7 +29,7 @@ public class MonnifyController {
         return monnifyService.handleInitiateBulkTransfer(bulkTransferRequest);
     }
 
-    @PostMapping("/authorize-single_transfer")
+    @PostMapping("/authorize-single-transfer")
     public Object authorizeSingleTransfer(@RequestBody AuthorizeSingleTransferRequest transferRequest) {
         return monnifyService.handleAuthorizeSingleTransfers(transferRequest);
     }
