@@ -1,13 +1,15 @@
-package com.stanbic.redbox.debit.service.dto.requests;
+package com.stanbic.redbox.debit.service.dto.monnify.requests;
 
 import lombok.Data;
 
 @Data
-public class BulkTransferSubRequest {
+public class TransferRequest {
     private Float amount;
     private String reference;
     private String narration;
     private String destinationBankCode;
     private String destinationAccountNumber;
     private String currency;
+    private String sourceAccountNumber;
+
 }

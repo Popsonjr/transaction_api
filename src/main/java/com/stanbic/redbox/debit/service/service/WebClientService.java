@@ -1,8 +1,11 @@
 package com.stanbic.redbox.debit.service.service;
 
-import com.stanbic.redbox.debit.service.dto.response.TransferResponse;
+import com.stanbic.redbox.debit.service.dto.monnify.response.TransferResponse;
 import com.stanbic.redbox.debit.service.enums.ResponseCodes;
 import com.stanbic.redbox.debit.service.exceptions.custom.CustomRuntimeException;
+import com.stanbic.redbox.debit.service.service.monnify.TokenService;
+import com.stanbic.redbox.debit.service.util.MonnifyUtils;
+import lombok.RequiredArgsConstructor;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.core.ParameterizedTypeReference;
 import org.springframework.http.HttpStatusCode;
@@ -13,6 +16,7 @@ import org.springframework.web.reactive.function.client.WebClient;
 import org.springframework.web.reactive.function.client.WebClientResponseException;
 import reactor.core.publisher.Mono;
 
+@RequiredArgsConstructor
 @Service
 public class WebClientService {
     @Autowired
@@ -20,16 +24,26 @@ public class WebClientService {
     @Autowired
     private WebClient webClient;
 
-    public <T> ResponseEntity<TransferResponse> authorizeTransferRequest(String url, Object requestBody, String authKey) {
+    private final TokenService tokenService;
+
+    public <T> ResponseEntity<TransferResponse> monnifyRequest(String url, Object requestBody) {
+        return sendMonnifyRequest(url, requestBody, tokenService.getBearerToken());
+    }
+
+    public <T> ResponseEntity<TransferResponse> monnifyRequest(String url, Object requestBody, String authKey) {
+            return sendMonnifyRequest(url, requestBody, authKey);
+    }
+
+    public <T> ResponseEntity<TransferResponse> sendMonnifyRequest(String url, Object requestBody,  String authKey) {
         try {
             return webClient.post()
                     .uri(url)
                     .contentType(MediaType.APPLICATION_JSON)
                     .bodyValue(requestBody)
-                    .header("Authorization", authKey)
+                    .header("Authorization", "")
                     .header("Content-Type", "application/json")
                     .retrieve()
-                    .onStatus(HttpStatusCode::is4xxClientError, response -> {
+                    .onStatus(HttpStatusCode::isError, response -> {
                         return response.bodyToMono(String.class)
                                 .flatMap(errorBody -> {
                                     return Mono.error(new CustomRuntimeException(ResponseCodes.BAD_REQUEST, errorBody));
