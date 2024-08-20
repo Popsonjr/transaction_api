@@ -53,6 +53,12 @@ public class WebClientService {
                     .body(Mono.just(requestBody), Object.class)
                     .header("Authorization", authKey)
                     .retrieve()
+                    .onStatus(HttpStatusCode::is4xxClientError, res -> {
+                        return res.bodyToMono(String.class)
+                                .flatMap(error -> {
+                                    return Mono.error(new CustomRuntimeException(ResponseCodes.BAD_REQUEST, error));
+                                });
+                    })
 //                    .bodyToMono(responseType)
 //                    .doOnNext(response-> System.out.println("Response: " + response))
                     .toEntity(responseType)
