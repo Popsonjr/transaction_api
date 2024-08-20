@@ -2,6 +2,7 @@ package com.stanbic.redbox.debit.service.controller;
 
 import com.stanbic.redbox.debit.service.dto.monnify.requests.AuthorizeTransferRequest;
 import com.stanbic.redbox.debit.service.dto.monnify.requests.BulkTransferRequest;
+import com.stanbic.redbox.debit.service.dto.monnify.requests.OtpRequest;
 import com.stanbic.redbox.debit.service.dto.monnify.requests.TransferRequest;
 import com.stanbic.redbox.debit.service.dto.monnify.response.TransferResponse;
 import com.stanbic.redbox.debit.service.service.monnify.MonnifyService;
@@ -42,6 +43,11 @@ public class MonnifyController {
     @PostMapping("/authorize-bulk-transfer")
     public ResponseEntity<TransferResponse> authorizeBulkTransfer(@RequestBody AuthorizeTransferRequest transferRequest) {
         return monnifyService.handleAuthorizeBulkTransfer(transferRequest);
+    }
+
+    @PostMapping("/send-otp")
+    public ResponseEntity<TransferResponse> sendOtp(@RequestBody OtpRequest otpRequest) {
+        return monnifyService.handleSendOTP(otpRequest);
     }
 
 //    @GetMapping("/transactions/{transactionTReference}")

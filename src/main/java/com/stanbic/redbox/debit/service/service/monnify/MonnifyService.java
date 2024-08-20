@@ -3,6 +3,7 @@ package com.stanbic.redbox.debit.service.service.monnify;
 import com.fasterxml.jackson.databind.ObjectMapper;
 import com.stanbic.redbox.debit.service.dto.monnify.requests.AuthorizeTransferRequest;
 import com.stanbic.redbox.debit.service.dto.monnify.requests.BulkTransferRequest;
+import com.stanbic.redbox.debit.service.dto.monnify.requests.OtpRequest;
 import com.stanbic.redbox.debit.service.dto.monnify.requests.TransferRequest;
 import com.stanbic.redbox.debit.service.dto.monnify.response.TransferResponse;
 import com.stanbic.redbox.debit.service.enums.ResponseCodes;
@@ -63,6 +64,11 @@ public class MonnifyService {
     public ResponseEntity<TransferResponse> handleAuthorizeBulkTransfer(AuthorizeTransferRequest transferRequest) {
         String url = baseUrl + "/api/v2/disbursements/batch/validate-otp";
         return webClientService.monnifyRequest(url, transferRequest, tokenService.getBearerToken());
+    }
+
+    public ResponseEntity<TransferResponse> handleSendOTP(OtpRequest otpRequest) {
+        String url = baseUrl + "/api/v2/disbursements/single/resend-otp";
+        return webClientService.monnifyRequest(url, otpRequest, tokenService.getBearerToken());
     }
 
 //    public TransactionDetails getTransactionDetails(String transactionReference) {
