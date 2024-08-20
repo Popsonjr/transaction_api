@@ -39,43 +39,30 @@ public class MonnifyService {
 
     private final WebClientService webClientService;
 
-    private final MonnifyUtils monnifyUtils;
-
-
-
-
-
-
-
-
-
-
-
-
-
+    private final TokenService tokenService;
 
 
     @SneakyThrows
     public ResponseEntity<TransferResponse> handleInitiateTransfer(TransferRequest transferRequest) {
         transferRequest.setReference(TransactionReferenceGenerator.generateReference());
         String url = baseUrl + "/api/v2/disbursements/single";
-        return webClientService.monnifyRequest(url, transferRequest);
+        return webClientService.monnifyRequest(url, transferRequest, tokenService.getBearerToken());
     }
 
     public ResponseEntity<TransferResponse> handleInitiateBulkTransfer(BulkTransferRequest bulkTransferRequest) {
         bulkTransferRequest.setBatchReference(TransactionReferenceGenerator.generateReference());
         String url = baseUrl + "/api/v2/disbursements/batch";
-        return  webClientService.monnifyRequest(url, bulkTransferRequest);
+        return  webClientService.monnifyRequest(url, bulkTransferRequest, tokenService.getBearerToken());
     }
 
     public ResponseEntity<TransferResponse> handleAuthorizeSingleTransfers(AuthorizeTransferRequest transferRequest) {
         String url = baseUrl + "/api/v2/disbursements/single/validate-otp";
-        return webClientService.monnifyRequest(url, transferRequest);
+        return webClientService.monnifyRequest(url, transferRequest, tokenService.getBearerToken());
     }
 
     public ResponseEntity<TransferResponse> handleAuthorizeBulkTransfer(AuthorizeTransferRequest transferRequest) {
         String url = baseUrl + "/api/v2/disbursements/batch/validate-otp";
-        return webClientService.monnifyRequest(url, transferRequest);
+        return webClientService.monnifyRequest(url, transferRequest, tokenService.getBearerToken());
     }
 
 //    public TransactionDetails getTransactionDetails(String transactionReference) {

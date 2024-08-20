@@ -24,11 +24,12 @@ public class WebClientService {
     @Autowired
     private WebClient webClient;
 
-    private final TokenService tokenService;
+//    private String bearerToken;
+//    private final TokenService tokenService;
 
-    public <T> ResponseEntity<TransferResponse> monnifyRequest(String url, Object requestBody) {
-        return sendMonnifyRequest(url, requestBody, tokenService.getBearerToken());
-    }
+//    public <T> ResponseEntity<TransferResponse> monnifyRequest(String url, Object requestBody) {
+//        return sendMonnifyRequest(url, requestBody, tokenService.getBearerToken());
+//    }
 
     public <T> ResponseEntity<TransferResponse> monnifyRequest(String url, Object requestBody, String authKey) {
             return sendMonnifyRequest(url, requestBody, authKey);
@@ -40,7 +41,7 @@ public class WebClientService {
                     .uri(url)
                     .contentType(MediaType.APPLICATION_JSON)
                     .bodyValue(requestBody)
-                    .header("Authorization", "")
+                    .header("Authorization", authKey)
                     .header("Content-Type", "application/json")
                     .retrieve()
                     .onStatus(HttpStatusCode::isError, response -> {

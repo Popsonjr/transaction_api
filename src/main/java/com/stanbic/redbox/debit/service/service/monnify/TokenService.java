@@ -72,7 +72,7 @@ public class TokenService {
     public String getBearerToken() {
         String token = handleGetAccessToken();
         String Authorization = "Bearer " + token;
-        System.out.println(Authorization);
+//        System.out.println(Authorization);
         return Authorization;
     }
 
