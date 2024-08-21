@@ -55,6 +55,16 @@ public class MonnifyController {
         return monnifyService.handleGetSingleTransferStatus(reference);
     }
 
+    @GetMapping("/list-single-transfers")
+    public ResponseEntity<TransferResponse> ListAllSingleTransfers(@RequestParam Integer pageSize, @RequestParam Integer pageNo) {
+        return monnifyService.handleListAllSingleTransfers(pageSize, pageNo);
+    }
+
+    @GetMapping("/list-bulk-transfers")
+    public ResponseEntity<TransferResponse> ListAllBulkTransfers(@RequestParam Integer pageSize, @RequestParam Integer pageNo) {
+        return monnifyService.handleListAllBulkTransfers(pageSize, pageNo);
+    }
+
 //    @GetMapping("/transactions/{transactionTReference}")
 //    public ResponseEntity<TransactionDetails>
 //    getTransactionDetails(@PathVariable String transactionReference) {

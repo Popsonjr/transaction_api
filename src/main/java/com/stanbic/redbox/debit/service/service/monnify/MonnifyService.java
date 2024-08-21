@@ -79,19 +79,32 @@ public class MonnifyService {
     }
 
     public ResponseEntity<TransferResponse> handleGetSingleTransferStatus(String reference) {
-//        String url = baseUrl + "/api/v2/disbursements/single/summary";
-//        Map<String, String> queryParams = new HashMap<>();
-//        queryParams.put("reference", reference);
-
         String fullURL = UriComponentsBuilder.fromUriString(baseUrl)
                 .path("/api/v2/disbursements/single/summary")
                 .queryParam("reference", reference)
                 .build()
                 .toUriString();
-
-
         return webClientService.getRequest(fullURL, TokenType.BEARER);
-//        return webClientService.monnifyRequest(url, reference, true);
+    }
+
+    public ResponseEntity<TransferResponse> handleListAllSingleTransfers(Integer pageSize, Integer pageNo) {
+        String url = UriComponentsBuilder.fromUriString(baseUrl)
+                .path("/api/v2/disbursements/single/transactions")
+                .queryParam("pageSize", pageSize)
+                .queryParam("pageNo", pageNo)
+                .build()
+                .toUriString();
+        return webClientService.getRequest(url, TokenType.BEARER);
+    }
+
+    public ResponseEntity<TransferResponse> handleListAllBulkTransfers(Integer pageSize, Integer pageNo) {
+        String url = UriComponentsBuilder.fromUriString(baseUrl)
+                .path("/api/v2/disbursements/bulk/transactions")
+                .queryParam("pageSize", pageSize)
+                .queryParam("pageNo", pageNo)
+                .build()
+                .toUriString();
+        return webClientService.getRequest(url, TokenType.BEARER);
     }
 
 //    public TransactionDetails getTransactionDetails(String transactionReference) {
