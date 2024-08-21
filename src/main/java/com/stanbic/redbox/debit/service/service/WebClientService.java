@@ -2,9 +2,9 @@ package com.stanbic.redbox.debit.service.service;
 
 import com.stanbic.redbox.debit.service.dto.monnify.response.TransferResponse;
 import com.stanbic.redbox.debit.service.enums.ResponseCodes;
+import com.stanbic.redbox.debit.service.enums.TokenType;
 import com.stanbic.redbox.debit.service.exceptions.custom.CustomRuntimeException;
 import com.stanbic.redbox.debit.service.service.monnify.TokenService;
-import com.stanbic.redbox.debit.service.util.MonnifyUtils;
 import lombok.RequiredArgsConstructor;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.core.ParameterizedTypeReference;
@@ -14,7 +14,12 @@ import org.springframework.http.ResponseEntity;
 import org.springframework.stereotype.Service;
 import org.springframework.web.reactive.function.client.WebClient;
 import org.springframework.web.reactive.function.client.WebClientResponseException;
+import org.springframework.web.util.UriComponentsBuilder;
 import reactor.core.publisher.Mono;
+
+import java.net.URI;
+import java.util.Collections;
+import java.util.Map;
 
 @RequiredArgsConstructor
 @Service
@@ -24,24 +29,26 @@ public class WebClientService {
     @Autowired
     private WebClient webClient;
 
-//    private String bearerToken;
-//    private final TokenService tokenService;
+    //    private String bearerToken;
+    private final TokenService tokenService;
 
-//    public <T> ResponseEntity<TransferResponse> monnifyRequest(String url, Object requestBody) {
-//        return sendMonnifyRequest(url, requestBody, tokenService.getBearerToken());
-//    }
+    public <T> ResponseEntity<TransferResponse> monnifyRequest(String url, Object requestBody, TokenType token) {
+        if (token == TokenType.BEARER)
+            return sendMonnifyRequest(url, requestBody, tokenService.getBearerToken());
+        if (token == TokenType.AUTH)
+            return sendMonnifyRequest(url, requestBody, tokenService.getAuthKey());
 
-    public <T> ResponseEntity<TransferResponse> monnifyRequest(String url, Object requestBody, String authKey) {
-            return sendMonnifyRequest(url, requestBody, authKey);
+        return sendMonnifyRequest(url, requestBody, null);
     }
 
-    public <T> ResponseEntity<TransferResponse> sendMonnifyRequest(String url, Object requestBody,  String authKey) {
+
+    public <T> ResponseEntity<TransferResponse> sendMonnifyRequest(String url, Object requestBody,  String token) {
         try {
             return webClient.post()
                     .uri(url)
                     .contentType(MediaType.APPLICATION_JSON)
                     .bodyValue(requestBody)
-                    .header("Authorization", authKey)
+                    .header("Authorization", token)
                     .header("Content-Type", "application/json")
                     .retrieve()
                     .onStatus(HttpStatusCode::isError, response -> {
@@ -53,7 +60,7 @@ public class WebClientService {
                     .toEntity(new ParameterizedTypeReference<TransferResponse>() {
                     })
                     .block();
-        } catch(WebClientResponseException e) {
+        } catch (WebClientResponseException e) {
             throw new RuntimeException("Error: " + e.getMessage(), e);
 //            return new ResponseEntity<>(new RedboxResponse("99", "Bad Request", e.getMessage()), HttpStatus.BAD_REQUEST);
         } catch (Exception e) {
@@ -61,7 +68,33 @@ public class WebClientService {
         }
     }
 
-    public <T> ResponseEntity<T> postRequest(String url, Object requestBody, Class <T> responseType, String authKey) {
+    public <T> ResponseEntity<TransferResponse> getRequest(String url, TokenType token) {
+        try {
+            WebClient.RequestHeadersUriSpec<?> requestSpec = (WebClient.RequestHeadersUriSpec<?>) webClientBuilder.build()
+                    .get()
+                    .uri(url);
+            if (token == TokenType.BEARER) requestSpec.header("Authorization", tokenService.getBearerToken());
+            if (token == TokenType.AUTH) requestSpec.header("Authorization", tokenService.getAuthKey());
+
+            return requestSpec.accept(MediaType.APPLICATION_JSON)
+                    .retrieve()
+                    .onStatus(HttpStatusCode::isError, response -> {
+                        return response.bodyToMono(String.class)
+                                .flatMap(error -> {
+                                    return Mono.error(new CustomRuntimeException(ResponseCodes.BAD_REQUEST, error));
+                                });
+                    })
+                    .toEntity(new ParameterizedTypeReference<TransferResponse>() {
+                    })
+                    .block();
+        } catch (WebClientResponseException e) {
+            throw new RuntimeException("Error: " + e.getMessage(), e);
+        } catch (Exception e) {
+            throw new RuntimeException("Error " + e.getMessage(), e);
+        }
+    }
+
+    public <T> ResponseEntity<T> postRequest(String url, Object requestBody, Class<T> responseType, String authKey) {
         try {
             return webClient.post()
                     .uri(url)
@@ -78,7 +111,7 @@ public class WebClientService {
 //                    .doOnNext(response-> System.out.println("Response: " + response))
                     .toEntity(responseType)
                     .block();
-        } catch(WebClientResponseException e) {
+        } catch (WebClientResponseException e) {
             throw new RuntimeException("Error: " + e.getMessage(), e);
 //            return new ResponseEntity<>(new RedboxResponse("99", "Bad Request", e.getMessage()), HttpStatus.BAD_REQUEST);
         } catch (Exception e) {

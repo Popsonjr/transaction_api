@@ -50,6 +50,11 @@ public class MonnifyController {
         return monnifyService.handleSendOTP(otpRequest);
     }
 
+    @GetMapping("/single-transfer-status")
+    public ResponseEntity<TransferResponse> getSingleTransferStatus(@RequestParam String reference) {
+        return monnifyService.handleGetSingleTransferStatus(reference);
+    }
+
 //    @GetMapping("/transactions/{transactionTReference}")
 //    public ResponseEntity<TransactionDetails>
 //    getTransactionDetails(@PathVariable String transactionReference) {

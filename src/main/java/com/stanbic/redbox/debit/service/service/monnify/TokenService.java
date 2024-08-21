@@ -1,6 +1,7 @@
 package com.stanbic.redbox.debit.service.service.monnify;
 
 import com.fasterxml.jackson.databind.ObjectMapper;
+import com.stanbic.redbox.debit.service.clients.TokenClientService;
 import com.stanbic.redbox.debit.service.enums.ResponseCodes;
 import com.stanbic.redbox.debit.service.exceptions.custom.CustomRuntimeException;
 import com.stanbic.redbox.debit.service.model.monnify.AccessTokenResponse;
@@ -34,7 +35,7 @@ public class TokenService {
     private Instant tokenGenerationTime;
     private final ObjectMapper objectMapper;
 
-    private final WebClientService webClientService;
+    private final TokenClientService tokenClientService;
 
     public String getAuthKey() {
         String authKey = apiKey + ":" + secretKey;
@@ -45,7 +46,6 @@ public class TokenService {
     public String handleGetAccessToken() {
         if (accessToken == null || isAccessTokenExpired())
             fetchAccessToken();
-        System.out.println(accessToken);
         return accessToken;
     }
 
@@ -57,7 +57,7 @@ public class TokenService {
         String url = baseUrl + "/api/v1/auth/login";
 
         HashMap<String, Object> payload = new HashMap<>();
-        ResponseEntity<Object> response = webClientService.postRequest(url, payload, Object.class, getAuthKey());
+        ResponseEntity<Object> response = tokenClientService.postRequest(url, payload, Object.class, getAuthKey());
 
 
         if (response.getStatusCode() != HttpStatus.OK || response.getBody() == null) {
@@ -72,7 +72,6 @@ public class TokenService {
     public String getBearerToken() {
         String token = handleGetAccessToken();
         String Authorization = "Bearer " + token;
-//        System.out.println(Authorization);
         return Authorization;
     }
 

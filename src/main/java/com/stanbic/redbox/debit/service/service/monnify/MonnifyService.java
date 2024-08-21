@@ -7,6 +7,7 @@ import com.stanbic.redbox.debit.service.dto.monnify.requests.OtpRequest;
 import com.stanbic.redbox.debit.service.dto.monnify.requests.TransferRequest;
 import com.stanbic.redbox.debit.service.dto.monnify.response.TransferResponse;
 import com.stanbic.redbox.debit.service.enums.ResponseCodes;
+import com.stanbic.redbox.debit.service.enums.TokenType;
 import com.stanbic.redbox.debit.service.exceptions.custom.CustomRuntimeException;
 import com.stanbic.redbox.debit.service.model.monnify.AccessTokenResponse;
 //import org.apache.http.HttpRequest;
@@ -15,15 +16,20 @@ import com.stanbic.redbox.debit.service.util.MonnifyUtils;
 import com.stanbic.redbox.debit.service.util.TransactionReferenceGenerator;
 import lombok.RequiredArgsConstructor;
 import lombok.SneakyThrows;
+import org.apache.http.client.utils.URIBuilder;
 import org.springframework.beans.factory.annotation.Value;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.stereotype.Service;
+import org.springframework.web.reactive.function.client.WebClient;
+import org.springframework.web.util.UriComponentsBuilder;
 
 import java.io.IOException;
 import java.time.Duration;
 import java.time.Instant;
+import java.util.Collections;
 import java.util.HashMap;
+import java.util.Map;
 
 @RequiredArgsConstructor
 @Service
@@ -38,37 +44,54 @@ public class MonnifyService {
     private Instant tokenGenerationTime;
     private final ObjectMapper objectMapper;
 
+    private final WebClient.Builder webClientBuilder;
     private final WebClientService webClientService;
 
-    private final TokenService tokenService;
+//    private final TokenService tokenService;
 
 
     @SneakyThrows
     public ResponseEntity<TransferResponse> handleInitiateTransfer(TransferRequest transferRequest) {
         transferRequest.setReference(TransactionReferenceGenerator.generateReference());
         String url = baseUrl + "/api/v2/disbursements/single";
-        return webClientService.monnifyRequest(url, transferRequest, tokenService.getBearerToken());
+        return webClientService.monnifyRequest(url, transferRequest, TokenType.BEARER);
     }
 
     public ResponseEntity<TransferResponse> handleInitiateBulkTransfer(BulkTransferRequest bulkTransferRequest) {
         bulkTransferRequest.setBatchReference(TransactionReferenceGenerator.generateReference());
         String url = baseUrl + "/api/v2/disbursements/batch";
-        return  webClientService.monnifyRequest(url, bulkTransferRequest, tokenService.getBearerToken());
+        return  webClientService.monnifyRequest(url, bulkTransferRequest, TokenType.BEARER);
     }
 
     public ResponseEntity<TransferResponse> handleAuthorizeSingleTransfers(AuthorizeTransferRequest transferRequest) {
         String url = baseUrl + "/api/v2/disbursements/single/validate-otp";
-        return webClientService.monnifyRequest(url, transferRequest, tokenService.getBearerToken());
+        return webClientService.monnifyRequest(url, transferRequest,  TokenType.BEARER);
     }
 
     public ResponseEntity<TransferResponse> handleAuthorizeBulkTransfer(AuthorizeTransferRequest transferRequest) {
         String url = baseUrl + "/api/v2/disbursements/batch/validate-otp";
-        return webClientService.monnifyRequest(url, transferRequest, tokenService.getBearerToken());
+        return webClientService.monnifyRequest(url, transferRequest,  TokenType.BEARER);
     }
 
     public ResponseEntity<TransferResponse> handleSendOTP(OtpRequest otpRequest) {
         String url = baseUrl + "/api/v2/disbursements/single/resend-otp";
-        return webClientService.monnifyRequest(url, otpRequest, tokenService.getBearerToken());
+        return webClientService.monnifyRequest(url, otpRequest,  TokenType.BEARER);
+    }
+
+    public ResponseEntity<TransferResponse> handleGetSingleTransferStatus(String reference) {
+//        String url = baseUrl + "/api/v2/disbursements/single/summary";
+//        Map<String, String> queryParams = new HashMap<>();
+//        queryParams.put("reference", reference);
+
+        String fullURL = UriComponentsBuilder.fromUriString(baseUrl)
+                .path("/api/v2/disbursements/single/summary")
+                .queryParam("reference", reference)
+                .build()
+                .toUriString();
+
+
+        return webClientService.getRequest(fullURL, TokenType.BEARER);
+//        return webClientService.monnifyRequest(url, reference, true);
     }
 
 //    public TransactionDetails getTransactionDetails(String transactionReference) {
