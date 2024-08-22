@@ -107,6 +107,16 @@ public class MonnifyService {
         return webClientService.getRequest(url, TokenType.BEARER);
     }
 
+    public ResponseEntity<TransferResponse> handleGetBulkTransferTransactions(String batchReference, Integer pageSize, Integer pageNo) {
+        String url = UriComponentsBuilder.fromUriString(baseUrl)
+                .path("/api/v2/disbursements/bulk/" + batchReference + "/transactions")
+                .queryParam("pageSize", pageSize)
+                .queryParam("pageNo", pageNo)
+                .build()
+                .toUriString();
+        return webClientService.getRequest(url, TokenType.BEARER);
+    }
+
 //    public TransactionDetails getTransactionDetails(String transactionReference) {
 //        String url = baseUrl + "/api/v1/transactions/" + transactionReference;
 //    }
