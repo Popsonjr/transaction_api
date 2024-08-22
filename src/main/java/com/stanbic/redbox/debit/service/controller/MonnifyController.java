@@ -4,10 +4,9 @@ import com.stanbic.redbox.debit.service.dto.monnify.requests.AuthorizeTransferRe
 import com.stanbic.redbox.debit.service.dto.monnify.requests.BulkTransferRequest;
 import com.stanbic.redbox.debit.service.dto.monnify.requests.OtpRequest;
 import com.stanbic.redbox.debit.service.dto.monnify.requests.TransferRequest;
-import com.stanbic.redbox.debit.service.dto.monnify.response.TransferResponse;
+import com.stanbic.redbox.debit.service.dto.monnify.response.MonnifyResponse;
 import com.stanbic.redbox.debit.service.service.monnify.MonnifyService;
 import com.stanbic.redbox.debit.service.service.monnify.TokenService;
-import com.stanbic.redbox.debit.service.util.MonnifyUtils;
 import lombok.RequiredArgsConstructor;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
@@ -41,33 +40,43 @@ public class MonnifyController {
     }
 
     @PostMapping("/authorize-bulk-transfer")
-    public ResponseEntity<TransferResponse> authorizeBulkTransfer(@RequestBody AuthorizeTransferRequest transferRequest) {
+    public ResponseEntity<MonnifyResponse> authorizeBulkTransfer(@RequestBody AuthorizeTransferRequest transferRequest) {
         return monnifyService.handleAuthorizeBulkTransfer(transferRequest);
     }
 
     @PostMapping("/send-otp")
-    public ResponseEntity<TransferResponse> sendOtp(@RequestBody OtpRequest otpRequest) {
+    public ResponseEntity<MonnifyResponse> sendOtp(@RequestBody OtpRequest otpRequest) {
         return monnifyService.handleSendOTP(otpRequest);
     }
 
     @GetMapping("/single-transfer-status")
-    public ResponseEntity<TransferResponse> getSingleTransferStatus(@RequestParam String reference) {
+    public ResponseEntity<MonnifyResponse> getSingleTransferStatus(@RequestParam String reference) {
         return monnifyService.handleGetSingleTransferStatus(reference);
     }
 
+    @GetMapping("/bulk-transfer-status")
+    public ResponseEntity<MonnifyResponse> getBulkTransferStatus(@RequestParam String batchReference) {
+        return monnifyService.handleGetBulkTransferStatus(batchReference);
+    }
+
     @GetMapping("/list-single-transfers")
-    public ResponseEntity<TransferResponse> listAllSingleTransfers(@RequestParam Integer pageSize, @RequestParam Integer pageNo) {
+    public ResponseEntity<MonnifyResponse> listAllSingleTransfers(@RequestParam Integer pageSize, @RequestParam Integer pageNo) {
         return monnifyService.handleListAllSingleTransfers(pageSize, pageNo);
     }
 
     @GetMapping("/list-bulk-transfers")
-    public ResponseEntity<TransferResponse> listAllBulkTransfers(@RequestParam Integer pageSize, @RequestParam Integer pageNo) {
+    public ResponseEntity<MonnifyResponse> listAllBulkTransfers(@RequestParam Integer pageSize, @RequestParam Integer pageNo) {
         return monnifyService.handleListAllBulkTransfers(pageSize, pageNo);
     }
 
     @GetMapping("/bulk-transfer-transactions")
-    public ResponseEntity<TransferResponse> getBulkTransferTransactions(@RequestParam String batchReference, @RequestParam Integer pageSize, @RequestParam Integer pageNo) {
+    public ResponseEntity<MonnifyResponse> getBulkTransferTransactions(@RequestParam String batchReference, @RequestParam Integer pageSize, @RequestParam Integer pageNo) {
         return monnifyService.handleGetBulkTransferTransactions(batchReference, pageSize, pageNo);
+    }
+
+    @GetMapping("/disbursements/search-transactions")
+    public ResponseEntity<MonnifyResponse> searchDisbursementsTransactions(@RequestParam String sourceAccountNumber, @RequestParam Integer pageSize, @RequestParam Integer pageNo, @RequestParam String startDate, @RequestParam String endDate, @RequestParam String amountFrom, @RequestParam String amountTo) {
+        return monnifyService.handleSearchDisbursementTransactions(sourceAccountNumber, pageSize, pageNo, startDate, endDate, amountFrom, amountTo);
     }
 
 //    @GetMapping("/transactions/{transactionTReference}")

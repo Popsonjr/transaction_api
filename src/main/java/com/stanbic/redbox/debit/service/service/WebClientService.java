@@ -1,6 +1,6 @@
 package com.stanbic.redbox.debit.service.service;
 
-import com.stanbic.redbox.debit.service.dto.monnify.response.TransferResponse;
+import com.stanbic.redbox.debit.service.dto.monnify.response.MonnifyResponse;
 import com.stanbic.redbox.debit.service.enums.ResponseCodes;
 import com.stanbic.redbox.debit.service.enums.TokenType;
 import com.stanbic.redbox.debit.service.exceptions.custom.CustomRuntimeException;
@@ -14,12 +14,7 @@ import org.springframework.http.ResponseEntity;
 import org.springframework.stereotype.Service;
 import org.springframework.web.reactive.function.client.WebClient;
 import org.springframework.web.reactive.function.client.WebClientResponseException;
-import org.springframework.web.util.UriComponentsBuilder;
 import reactor.core.publisher.Mono;
-
-import java.net.URI;
-import java.util.Collections;
-import java.util.Map;
 
 @RequiredArgsConstructor
 @Service
@@ -32,7 +27,7 @@ public class WebClientService {
     //    private String bearerToken;
     private final TokenService tokenService;
 
-    public <T> ResponseEntity<TransferResponse> monnifyRequest(String url, Object requestBody, TokenType token) {
+    public <T> ResponseEntity<MonnifyResponse> monnifyRequest(String url, Object requestBody, TokenType token) {
         if (token == TokenType.BEARER)
             return sendMonnifyRequest(url, requestBody, tokenService.getBearerToken());
         if (token == TokenType.AUTH)
@@ -42,7 +37,7 @@ public class WebClientService {
     }
 
 
-    public <T> ResponseEntity<TransferResponse> sendMonnifyRequest(String url, Object requestBody,  String token) {
+    public <T> ResponseEntity<MonnifyResponse> sendMonnifyRequest(String url, Object requestBody, String token) {
         try {
             return webClient.post()
                     .uri(url)
@@ -57,7 +52,7 @@ public class WebClientService {
                                     return Mono.error(new CustomRuntimeException(ResponseCodes.BAD_REQUEST, errorBody));
                                 });
                     })
-                    .toEntity(new ParameterizedTypeReference<TransferResponse>() {
+                    .toEntity(new ParameterizedTypeReference<MonnifyResponse>() {
                     })
                     .block();
         } catch (WebClientResponseException e) {
@@ -68,7 +63,7 @@ public class WebClientService {
         }
     }
 
-    public <T> ResponseEntity<TransferResponse> getRequest(String url, TokenType token) {
+    public <T> ResponseEntity<MonnifyResponse> getRequest(String url, TokenType token) {
         try {
             WebClient.RequestHeadersUriSpec<?> requestSpec = (WebClient.RequestHeadersUriSpec<?>) webClientBuilder.build()
                     .get()
@@ -84,7 +79,7 @@ public class WebClientService {
                                     return Mono.error(new CustomRuntimeException(ResponseCodes.BAD_REQUEST, error));
                                 });
                     })
-                    .toEntity(new ParameterizedTypeReference<TransferResponse>() {
+                    .toEntity(new ParameterizedTypeReference<MonnifyResponse>() {
                     })
                     .block();
         } catch (WebClientResponseException e) {
