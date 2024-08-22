@@ -18,7 +18,6 @@ public class AccountService {
     @Autowired
     private AccountRepository accountRepository;
 
-
     public ResponseEntity<RedboxResponse> createAccount(@RequestBody Account account) {
         System.out.println("saving account to DB");
         accountRepository.save(account);

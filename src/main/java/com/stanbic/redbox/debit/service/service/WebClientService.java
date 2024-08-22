@@ -24,7 +24,6 @@ public class WebClientService {
     @Autowired
     private WebClient webClient;
 
-    //    private String bearerToken;
     private final TokenService tokenService;
 
     public <T> ResponseEntity<MonnifyResponse> monnifyRequest(String url, Object requestBody, TokenType token) {
@@ -35,7 +34,6 @@ public class WebClientService {
 
         return sendMonnifyRequest(url, requestBody, null);
     }
-
 
     public <T> ResponseEntity<MonnifyResponse> sendMonnifyRequest(String url, Object requestBody, String token) {
         try {
@@ -55,9 +53,6 @@ public class WebClientService {
                     .toEntity(new ParameterizedTypeReference<MonnifyResponse>() {
                     })
                     .block();
-        } catch (WebClientResponseException e) {
-            throw new RuntimeException("Error: " + e.getMessage(), e);
-//            return new ResponseEntity<>(new RedboxResponse("99", "Bad Request", e.getMessage()), HttpStatus.BAD_REQUEST);
         } catch (Exception e) {
             throw new RuntimeException("Error: " + e.getMessage(), e);
         }
@@ -108,7 +103,6 @@ public class WebClientService {
                     .block();
         } catch (WebClientResponseException e) {
             throw new RuntimeException("Error: " + e.getMessage(), e);
-//            return new ResponseEntity<>(new RedboxResponse("99", "Bad Request", e.getMessage()), HttpStatus.BAD_REQUEST);
         } catch (Exception e) {
             throw new RuntimeException("Error: " + e.getMessage(), e);
         }
@@ -130,5 +124,4 @@ public class WebClientService {
                 .retrieve()
                 .bodyToMono(String.class);
     }
-
 }

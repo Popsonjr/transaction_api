@@ -13,7 +13,6 @@ import org.springframework.web.bind.annotation.*;
 
 @RestController
 @RequestMapping("/monnify")
-//@AllArgsConstructor
 @RequiredArgsConstructor
 public class MonnifyController {
     private final MonnifyService monnifyService;

@@ -2,9 +2,6 @@ package com.stanbic.redbox.debit.service.repository;
 
 import com.stanbic.redbox.debit.service.model.Account;
 import org.springframework.data.jpa.repository.JpaRepository;
-import org.springframework.data.jpa.repository.Query;
-import org.springframework.data.repository.CrudRepository;
-import org.springframework.data.repository.query.Param;
 import org.springframework.stereotype.Repository;
 
 import java.util.List;

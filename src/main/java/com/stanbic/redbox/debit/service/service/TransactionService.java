@@ -7,7 +7,6 @@ import com.stanbic.redbox.debit.service.enums.ResponseCodes;
 import com.stanbic.redbox.debit.service.enums.TransactionType;
 import com.stanbic.redbox.debit.service.exceptions.custom.CustomRuntimeException;
 import com.stanbic.redbox.debit.service.model.Account;
-import com.stanbic.redbox.debit.service.model.CustomerDetails;
 import com.stanbic.redbox.debit.service.model.Transaction;
 import com.stanbic.redbox.debit.service.dto.response.RedboxResponse;
 import com.stanbic.redbox.debit.service.repository.AccountRepository;
@@ -18,7 +17,6 @@ import lombok.RequiredArgsConstructor;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.stereotype.Service;
-import reactor.core.publisher.Mono;
 
 import java.io.IOException;
 import java.net.URI;
@@ -39,7 +37,6 @@ public class TransactionService {
     private final TransactionRepository transactionRepository;
 
     private final AccountRepository accountRepository;
-    private final WebClientService webClientService;
 
     public ResponseEntity<RedboxResponse> transfer(TransactionRequest transactionRequest) {
 
@@ -145,23 +142,11 @@ public class TransactionService {
     }
 
     public HttpResponse doHttpRequest(String uri) throws URISyntaxException {
-//        HttpRequest.newBuilder(request, (name, value) -> !name.equalsIgnoreCase("test"));
-//        HttpRequest.newBuilder(new URI("https://postman-echo.com/get"));
         HttpRequest getRequest = HttpRequest.newBuilder().uri(new URI(uri))
-//                .version(HttpClient.Version.HTTP_2)
                 .headers("name", "Shade", "age", "29")
                 .timeout(Duration.of(30, SECONDS))
                 .GET()
                 .build();
-
-//        HttpRequest postRequest = HttpRequest.newBuilder()
-//                .uri(new URI("https://postman-echo.com/post"))
-//                .POST(HttpRequest.BodyPublishers.noBody())
-//                .POST(HttpRequest.BodyPublishers.ofString("Body for test"))
-////                .POST(HttpRequest.BodyPublishers.ofInputStream(
-////                        () -> new ByteArrayInputStream(sampleData)
-////                ))
-//                .build();
 
         HttpClient client = HttpClient.newHttpClient();
         try {
@@ -171,17 +156,5 @@ public class TransactionService {
         } catch (IOException | InterruptedException e) {
             throw new RuntimeException(e);
         }
-    }
-
-    public Mono<ResponseEntity<?>> processCustomerDetails() {
-        String randomUserApi = "https://randomuser.me/api/";
-        return webClientService.getApiResponse(randomUserApi).map(response -> ResponseEntity.ok(response));
-    }
-
-    private String makeDecisionOnCustomer(CustomerDetails customerDetails) {
-        if (customerDetails.getAge() < 18)
-            return "Customer is not of age";
-        else
-            return "Customer is of age";
     }
 }

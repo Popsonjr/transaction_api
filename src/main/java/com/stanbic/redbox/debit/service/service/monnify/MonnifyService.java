@@ -1,6 +1,5 @@
 package com.stanbic.redbox.debit.service.service.monnify;
 
-import com.fasterxml.jackson.databind.ObjectMapper;
 import com.stanbic.redbox.debit.service.dto.monnify.requests.AuthorizeTransferRequest;
 import com.stanbic.redbox.debit.service.dto.monnify.requests.BulkTransferRequest;
 import com.stanbic.redbox.debit.service.dto.monnify.requests.OtpRequest;
@@ -14,7 +13,6 @@ import lombok.SneakyThrows;
 import org.springframework.beans.factory.annotation.Value;
 import org.springframework.http.ResponseEntity;
 import org.springframework.stereotype.Service;
-import org.springframework.web.reactive.function.client.WebClient;
 import org.springframework.web.util.UriComponentsBuilder;
 
 import java.time.*;
@@ -22,21 +20,11 @@ import java.time.format.DateTimeFormatter;
 
 @RequiredArgsConstructor
 @Service
-
 public class MonnifyService {
     @Value("${monnify.api.base-url}")
     private String baseUrl;
 
-    private String accessToken;
-    private Long expiresIn;
-    private Instant tokenGenerationTime;
-    private final ObjectMapper objectMapper;
-
-    private final WebClient.Builder webClientBuilder;
     private final WebClientService webClientService;
-
-//    private final TokenService tokenService;
-
 
     @SneakyThrows
     public ResponseEntity<MonnifyResponse> handleInitiateTransfer(TransferRequest transferRequest) {
@@ -78,7 +66,6 @@ public class MonnifyService {
     public ResponseEntity<MonnifyResponse> handleGetBulkTransferStatus(String batchReference) {
         String fullURL = UriComponentsBuilder.fromUriString(baseUrl)
                 .path("/api/v2/disbursements/bulk/" + batchReference + "/transactions")
-//                .queryParam("batchReference", batchReference)
                 .build()
                 .toUriString();
         return webClientService.getRequest(fullURL, TokenType.BEARER);
@@ -119,9 +106,6 @@ public class MonnifyService {
 
         ZonedDateTime zonedDateTime = ZonedDateTime.now(ZoneOffset.UTC);
         DateTimeFormatter formatter = DateTimeFormatter.ofPattern("yyyy-MM-dd'T'HH:mm:ss.SSSZ");
-//        String startDate = zonedDateTime.format(formatter);
-
-//        String endDate = zonedDateTime.format(formatter);
 
         String url = UriComponentsBuilder.fromUriString(baseUrl)
                 .path("/api/v2/disbursements/search-transactions")
@@ -137,8 +121,4 @@ public class MonnifyService {
 
         return webClientService.getRequest(url, TokenType.BEARER);
     }
-
-//    public TransactionDetails getTransactionDetails(String transactionReference) {
-//        String url = baseUrl + "/api/v1/transactions/" + transactionReference;
-//    }
 }

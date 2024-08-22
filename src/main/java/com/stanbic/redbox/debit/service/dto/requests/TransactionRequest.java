@@ -6,7 +6,6 @@ import java.math.BigDecimal;
 
 @Data
 public class TransactionRequest {
-
     private String sourceAccountNumber;
     private BigDecimal amount;
     private String channelID;
