@@ -78,6 +78,11 @@ public class MonnifyController {
         return monnifyService.handleSearchDisbursementTransactions(sourceAccountNumber, pageSize, pageNo, startDate, endDate, amountFrom, amountTo);
     }
 
+    @GetMapping("/disbursements/wallet-balance")
+    public ResponseEntity<MonnifyResponse> getWalletBalByAccNo (@RequestParam String accountNumber) {
+        return monnifyService.handleGetWalletBalByAccNo(accountNumber);
+    }
+
 //    @GetMapping("/transactions/{transactionTReference}")
 //    public ResponseEntity<TransactionDetails>
 //    getTransactionDetails(@PathVariable String transactionReference) {

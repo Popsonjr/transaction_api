@@ -121,4 +121,13 @@ public class MonnifyService {
 
         return webClientService.getRequest(url, TokenType.BEARER);
     }
+
+    public ResponseEntity<MonnifyResponse> handleGetWalletBalByAccNo(String accountNumber) {
+        String url = UriComponentsBuilder.fromUriString(baseUrl)
+                .path("/api/v2/disbursements/wallet-balance")
+                .queryParam("accountNumber", accountNumber)
+                .build()
+                .toUriString();
+        return webClientService.getRequest(url, TokenType.BEARER);
+    }
 }
