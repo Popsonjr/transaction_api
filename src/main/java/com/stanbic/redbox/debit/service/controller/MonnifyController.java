@@ -73,15 +73,16 @@ public class MonnifyController {
         return monnifyService.handleGetBulkTransferTransactions(batchReference, pageSize, pageNo);
     }
 
-    @GetMapping("/disbursements/search-transactions")
-    public ResponseEntity<MonnifyResponse> searchDisbursementsTransactions(@RequestParam String sourceAccountNumber, @RequestParam Integer pageSize, @RequestParam Integer pageNo, @RequestParam String startDate, @RequestParam String endDate, @RequestParam String amountFrom, @RequestParam String amountTo) {
-        return monnifyService.handleSearchDisbursementTransactions(sourceAccountNumber, pageSize, pageNo, startDate, endDate, amountFrom, amountTo);
-    }
-
     @GetMapping("/disbursements/wallet-balance")
     public ResponseEntity<MonnifyResponse> getWalletBalByAccNo (@RequestParam String accountNumber) {
         return monnifyService.handleGetWalletBalByAccNo(accountNumber);
     }
+
+//    @GetMapping("/disbursements/search-transactions")
+//    public ResponseEntity<MonnifyResponse> searchDisbursementsTransactions(@RequestParam String sourceAccountNumber, @RequestParam Integer pageSize, @RequestParam Integer pageNo, @RequestParam String startDate, @RequestParam String endDate, @RequestParam String amountFrom, @RequestParam String amountTo) {
+//        return monnifyService.handleSearchDisbursementTransactions(sourceAccountNumber, pageSize, pageNo, startDate, endDate, amountFrom, amountTo);
+//    }
+
 
 //    @GetMapping("/transactions/{transactionTReference}")
 //    public ResponseEntity<TransactionDetails>

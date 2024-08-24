@@ -3,6 +3,8 @@ package com.stanbic.redbox.debit.service.controller;
 import com.stanbic.redbox.debit.service.dto.requests.TransactionRequest;
 import com.stanbic.redbox.debit.service.dto.response.RedboxResponse;
 import com.stanbic.redbox.debit.service.dto.response.TransactionReceiptResponse;
+import com.stanbic.redbox.debit.service.enums.ResponseCodes;
+import com.stanbic.redbox.debit.service.exceptions.custom.CustomRuntimeException;
 import com.stanbic.redbox.debit.service.model.Transaction;
 import com.stanbic.redbox.debit.service.service.TransactionService;
 import com.stanbic.redbox.debit.service.service.WebClientService;
@@ -32,7 +34,11 @@ public class TransactionController {
 
     @GetMapping("/date-range")
     public ResponseEntity<RedboxResponse> getTransactionForDateRange(@RequestParam("startTime") String startTime, @RequestParam("endTime") String endTime) {
-        return transactionService.getTransactionsForDateRange(LocalDate.parse(startTime), LocalDate.parse(endTime));
+        try {
+            return transactionService.getTransactionsForDateRange(LocalDate.parse(startTime), LocalDate.parse(endTime));
+        } catch (Exception e) {
+            throw new CustomRuntimeException(ResponseCodes.BAD_REQUEST, e.getMessage());
+        }
     }
 
     @GetMapping("/{transactionId}/receipt")

@@ -5,7 +5,10 @@ import com.stanbic.redbox.debit.service.dto.monnify.requests.BulkTransferRequest
 import com.stanbic.redbox.debit.service.dto.monnify.requests.OtpRequest;
 import com.stanbic.redbox.debit.service.dto.monnify.requests.TransferRequest;
 import com.stanbic.redbox.debit.service.dto.monnify.response.MonnifyResponse;
+import com.stanbic.redbox.debit.service.enums.ResponseCodes;
 import com.stanbic.redbox.debit.service.enums.TokenType;
+import com.stanbic.redbox.debit.service.exceptions.custom.CustomRuntimeException;
+import com.stanbic.redbox.debit.service.service.HttpClientUtil;
 import com.stanbic.redbox.debit.service.service.WebClientService;
 import com.stanbic.redbox.debit.service.util.TransactionReferenceGenerator;
 import lombok.RequiredArgsConstructor;
@@ -15,8 +18,12 @@ import org.springframework.http.ResponseEntity;
 import org.springframework.stereotype.Service;
 import org.springframework.web.util.UriComponentsBuilder;
 
+import java.text.ParseException;
+import java.text.SimpleDateFormat;
 import java.time.*;
 import java.time.format.DateTimeFormatter;
+import java.util.Date;
+import java.util.HashMap;
 
 @RequiredArgsConstructor
 @Service
@@ -25,6 +32,7 @@ public class MonnifyService {
     private String baseUrl;
 
     private final WebClientService webClientService;
+    private final HttpClientUtil httpClientUtil;
 
     @SneakyThrows
     public ResponseEntity<MonnifyResponse> handleInitiateTransfer(TransferRequest transferRequest) {
@@ -51,7 +59,8 @@ public class MonnifyService {
 
     public ResponseEntity<MonnifyResponse> handleSendOTP(OtpRequest otpRequest) {
         String url = baseUrl + "/api/v2/disbursements/single/resend-otp";
-        return webClientService.monnifyRequest(url, otpRequest,  TokenType.BEARER);
+        return httpClientUtil.withOAuth2().post(url, otpRequest);
+//        return webClientService.monnifyRequest(url, otpRequest,  TokenType.BEARER);
     }
 
     public ResponseEntity<MonnifyResponse> handleGetSingleTransferStatus(String reference) {
@@ -101,26 +110,6 @@ public class MonnifyService {
         return webClientService.getRequest(url, TokenType.BEARER);
     }
 
-    @SneakyThrows
-    public ResponseEntity<MonnifyResponse> handleSearchDisbursementTransactions(String sourceAccountNumber, Integer pageSize, Integer pageNo, String startDate, String endDate, String amountFrom, String amountTo) {
-
-        ZonedDateTime zonedDateTime = ZonedDateTime.now(ZoneOffset.UTC);
-        DateTimeFormatter formatter = DateTimeFormatter.ofPattern("yyyy-MM-dd'T'HH:mm:ss.SSSZ");
-
-        String url = UriComponentsBuilder.fromUriString(baseUrl)
-                .path("/api/v2/disbursements/search-transactions")
-                .queryParam("sourceAccountNumber", sourceAccountNumber)
-                .queryParam("pageSize", pageSize)
-                .queryParam("pageNo", pageNo)
-                .queryParam("startDate", startDate)
-                .queryParam("endDate", endDate)
-                .queryParam("amountFrom", amountFrom)
-                .queryParam("amountTo", amountTo)
-                .build()
-                .toUriString();
-
-        return webClientService.getRequest(url, TokenType.BEARER);
-    }
 
     public ResponseEntity<MonnifyResponse> handleGetWalletBalByAccNo(String accountNumber) {
         String url = UriComponentsBuilder.fromUriString(baseUrl)
@@ -130,4 +119,48 @@ public class MonnifyService {
                 .toUriString();
         return webClientService.getRequest(url, TokenType.BEARER);
     }
+
+//    @SneakyThrows
+//    public ResponseEntity<MonnifyResponse> handleSearchDisbursementTransactions(String sourceAccountNumber, Integer pageSize, Integer pageNo, String startDate, String endDate, String amountFrom, String amountTo) {
+//        System.out.println("here");
+//
+//        ZonedDateTime zonedDateTime = ZonedDateTime.now(ZoneOffset.UTC);
+//        DateTimeFormatter formatter = DateTimeFormatter.ofPattern("yyyy-MM-dd'T'HH:mm:ss.SSSZ");
+//
+//        SimpleDateFormat inputFormat = new SimpleDateFormat("yyyy-MM-dd'T'HH:mm:ss.SSSZ");
+//        SimpleDateFormat outputFormat = new SimpleDateFormat("yyyy-MM-dd'T'HH:mm:ss.SSSZ");
+//        System.out.println("here1");
+//        try {
+//            System.out.println("here2");
+//            // Parse the input string into a Date object
+//            Date date = inputFormat.parse(startDate);
+//            Date date1 = inputFormat.parse(endDate);
+//            System.out.println("here3");
+//            // Format the Date object back into a string
+//            String formattedDate = outputFormat.format(date);
+//            String formattedDate1 = outputFormat.format(date1);
+//            System.out.println("here4");
+//            // Print the formatted date string
+//            System.out.println(formattedDate);
+//
+//
+//        String url = UriComponentsBuilder.fromUriString(baseUrl)
+//                .path("/api/v2/disbursements/search-transactions")
+//                .queryParam("sourceAccountNumber", sourceAccountNumber)
+//                .queryParam("pageSize", pageSize)
+//                .queryParam("pageNo", pageNo)
+//                .queryParam("startDate", formattedDate)
+//                .queryParam("endDate", formattedDate1)
+//                .queryParam("amountFrom", amountFrom)
+//                .queryParam("amountTo", amountTo)
+//                .build()
+//                .toUriString();
+//            System.out.println("here5");
+//        return webClientService.getRequest(url, TokenType.BEARER);
+//        } catch (ParseException e) {
+//            throw new CustomRuntimeException(ResponseCodes.BAD_REQUEST, e);
+////            System.err.println("Error parsing date: " + e.getMessage());
+//        }
+//    }
+
 }

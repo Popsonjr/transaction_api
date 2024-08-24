@@ -8,7 +8,7 @@ import java.time.LocalDate;
 import java.util.List;
 
 public interface TransactionRepository extends JpaRepository<Transaction, Long> {
-    @Query(value = "SELECT t FROM transaction t WHERE t.source_account_number = :accountNumber OR t.target_account_number = :target_account_number", nativeQuery = true)
+    @Query(value = "SELECT * FROM transaction t WHERE t.source_account_number = :accountNumber OR t.target_account_number = :accountNumber", nativeQuery = true)
     List<Transaction> findByAccountNumber(String accountNumber);
 
     @Query(value = "SELECT * FROM transaction t WHERE t.timestamp BETWEEN :startTime and :endTime", nativeQuery = true)

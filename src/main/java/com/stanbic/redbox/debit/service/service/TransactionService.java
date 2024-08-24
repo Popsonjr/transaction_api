@@ -24,8 +24,12 @@ import java.net.URISyntaxException;
 import java.net.http.HttpClient;
 import java.net.http.HttpRequest;
 import java.net.http.HttpResponse;
+import java.text.SimpleDateFormat;
 import java.time.Duration;
 import java.time.LocalDate;
+import java.time.OffsetDateTime;
+import java.time.format.DateTimeFormatter;
+import java.util.Date;
 import java.util.List;
 import java.util.UUID;
 
@@ -68,14 +72,12 @@ public class TransactionService {
     }
 
     public ResponseEntity<RedboxResponse> getTransactionsForDateRange(LocalDate startTime, LocalDate endTime) {
-
         if (endTime == null || startTime == null || !startTime.isBefore(endTime))
             return new ResponseEntity<>(new RedboxResponse("99", "Failed", "Invalid date range"), HttpStatus.EXPECTATION_FAILED);
 
         List<Transaction> transactions = transactionRepository.findByTimestampRange(startTime, endTime);
 
         return new ResponseEntity<>(new RedboxResponse("00", "Success", transactions), HttpStatus.OK);
-
     }
 
     public TransactionReceiptResponse generateReceipt(Long transactionId) {

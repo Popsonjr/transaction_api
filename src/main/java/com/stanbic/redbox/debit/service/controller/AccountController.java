@@ -16,10 +16,6 @@ import org.springframework.web.bind.annotation.*;
 public class AccountController {
     private final AccountService accountService;
 
-    private static String name;
-    private static final String age = "98";
-
-
     @PostMapping("/create-user")
     public ResponseEntity<?> create(@RequestBody Account account){
         System.out.println("/create-user received a request");
