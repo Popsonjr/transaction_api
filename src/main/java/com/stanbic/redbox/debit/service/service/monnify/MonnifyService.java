@@ -5,11 +5,7 @@ import com.stanbic.redbox.debit.service.dto.monnify.requests.BulkTransferRequest
 import com.stanbic.redbox.debit.service.dto.monnify.requests.OtpRequest;
 import com.stanbic.redbox.debit.service.dto.monnify.requests.TransferRequest;
 import com.stanbic.redbox.debit.service.dto.monnify.response.MonnifyResponse;
-import com.stanbic.redbox.debit.service.enums.ResponseCodes;
-import com.stanbic.redbox.debit.service.enums.TokenType;
-import com.stanbic.redbox.debit.service.exceptions.custom.CustomRuntimeException;
 import com.stanbic.redbox.debit.service.service.HttpClientUtil;
-import com.stanbic.redbox.debit.service.service.WebClientService;
 import com.stanbic.redbox.debit.service.util.TransactionReferenceGenerator;
 import lombok.RequiredArgsConstructor;
 import lombok.SneakyThrows;
@@ -18,49 +14,40 @@ import org.springframework.http.ResponseEntity;
 import org.springframework.stereotype.Service;
 import org.springframework.web.util.UriComponentsBuilder;
 
-import java.text.ParseException;
-import java.text.SimpleDateFormat;
-import java.time.*;
-import java.time.format.DateTimeFormatter;
-import java.util.Date;
-import java.util.HashMap;
-
 @RequiredArgsConstructor
 @Service
 public class MonnifyService {
     @Value("${monnify.api.base-url}")
     private String baseUrl;
 
-    private final WebClientService webClientService;
     private final HttpClientUtil httpClientUtil;
 
     @SneakyThrows
     public ResponseEntity<MonnifyResponse> handleInitiateTransfer(TransferRequest transferRequest) {
         transferRequest.setReference(TransactionReferenceGenerator.generateReference());
         String url = baseUrl + "/api/v2/disbursements/single";
-        return webClientService.monnifyRequest(url, transferRequest, TokenType.BEARER);
+        return httpClientUtil.withBearerToken().post(url, transferRequest);
     }
 
     public ResponseEntity<MonnifyResponse> handleInitiateBulkTransfer(BulkTransferRequest bulkTransferRequest) {
         bulkTransferRequest.setBatchReference(TransactionReferenceGenerator.generateReference());
         String url = baseUrl + "/api/v2/disbursements/batch";
-        return  webClientService.monnifyRequest(url, bulkTransferRequest, TokenType.BEARER);
+        return httpClientUtil.withBearerToken().post(url, bulkTransferRequest);
     }
 
     public ResponseEntity<MonnifyResponse> handleAuthorizeSingleTransfers(AuthorizeTransferRequest transferRequest) {
         String url = baseUrl + "/api/v2/disbursements/single/validate-otp";
-        return webClientService.monnifyRequest(url, transferRequest,  TokenType.BEARER);
+        return httpClientUtil.withBearerToken().post(url, transferRequest);
     }
 
     public ResponseEntity<MonnifyResponse> handleAuthorizeBulkTransfer(AuthorizeTransferRequest transferRequest) {
         String url = baseUrl + "/api/v2/disbursements/batch/validate-otp";
-        return webClientService.monnifyRequest(url, transferRequest,  TokenType.BEARER);
+        return httpClientUtil.withBearerToken().post(url, transferRequest);
     }
 
     public ResponseEntity<MonnifyResponse> handleSendOTP(OtpRequest otpRequest) {
         String url = baseUrl + "/api/v2/disbursements/single/resend-otp";
-        return httpClientUtil.withOAuth2().post(url, otpRequest);
-//        return webClientService.monnifyRequest(url, otpRequest,  TokenType.BEARER);
+        return httpClientUtil.withBearerToken().post(url, otpRequest);
     }
 
     public ResponseEntity<MonnifyResponse> handleGetSingleTransferStatus(String reference) {
@@ -69,7 +56,7 @@ public class MonnifyService {
                 .queryParam("reference", reference)
                 .build()
                 .toUriString();
-        return webClientService.getRequest(fullURL, TokenType.BEARER);
+        return httpClientUtil.withBearerToken().get(fullURL);
     }
 
     public ResponseEntity<MonnifyResponse> handleGetBulkTransferStatus(String batchReference) {
@@ -77,7 +64,7 @@ public class MonnifyService {
                 .path("/api/v2/disbursements/bulk/" + batchReference + "/transactions")
                 .build()
                 .toUriString();
-        return webClientService.getRequest(fullURL, TokenType.BEARER);
+        return httpClientUtil.withBearerToken().get(fullURL);
     }
 
     public ResponseEntity<MonnifyResponse> handleListAllSingleTransfers(Integer pageSize, Integer pageNo) {
@@ -87,7 +74,7 @@ public class MonnifyService {
                 .queryParam("pageNo", pageNo)
                 .build()
                 .toUriString();
-        return webClientService.getRequest(url, TokenType.BEARER);
+        return httpClientUtil.withBearerToken().get(url);
     }
 
     public ResponseEntity<MonnifyResponse> handleListAllBulkTransfers(Integer pageSize, Integer pageNo) {
@@ -97,7 +84,7 @@ public class MonnifyService {
                 .queryParam("pageNo", pageNo)
                 .build()
                 .toUriString();
-        return webClientService.getRequest(url, TokenType.BEARER);
+        return httpClientUtil.withBearerToken().get(url);
     }
 
     public ResponseEntity<MonnifyResponse> handleGetBulkTransferTransactions(String batchReference, Integer pageSize, Integer pageNo) {
@@ -107,7 +94,7 @@ public class MonnifyService {
                 .queryParam("pageNo", pageNo)
                 .build()
                 .toUriString();
-        return webClientService.getRequest(url, TokenType.BEARER);
+        return httpClientUtil.withBearerToken().get(url);
     }
 
 
@@ -117,7 +104,7 @@ public class MonnifyService {
                 .queryParam("accountNumber", accountNumber)
                 .build()
                 .toUriString();
-        return webClientService.getRequest(url, TokenType.BEARER);
+        return httpClientUtil.withBearerToken().get(url);
     }
 
 //    @SneakyThrows

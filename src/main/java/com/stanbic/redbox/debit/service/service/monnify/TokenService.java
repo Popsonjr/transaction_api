@@ -5,7 +5,6 @@ import com.stanbic.redbox.debit.service.clients.TokenClientService;
 import com.stanbic.redbox.debit.service.enums.ResponseCodes;
 import com.stanbic.redbox.debit.service.exceptions.custom.CustomRuntimeException;
 import com.stanbic.redbox.debit.service.model.monnify.AccessTokenResponse;
-import com.stanbic.redbox.debit.service.service.WebClientService;
 import lombok.RequiredArgsConstructor;
 import lombok.SneakyThrows;
 import org.springframework.beans.factory.annotation.Value;

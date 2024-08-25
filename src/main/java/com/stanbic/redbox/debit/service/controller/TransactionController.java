@@ -7,9 +7,7 @@ import com.stanbic.redbox.debit.service.enums.ResponseCodes;
 import com.stanbic.redbox.debit.service.exceptions.custom.CustomRuntimeException;
 import com.stanbic.redbox.debit.service.model.Transaction;
 import com.stanbic.redbox.debit.service.service.TransactionService;
-import com.stanbic.redbox.debit.service.service.WebClientService;
 import lombok.RequiredArgsConstructor;
-import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.validation.annotation.Validated;
@@ -23,9 +21,6 @@ import java.util.List;
 @RequestMapping("/transactions")
 public class TransactionController {
     private final TransactionService transactionService;
-
-    @Autowired
-    private WebClientService webClientService;
 
     @PostMapping
     public ResponseEntity<RedboxResponse> createTransaction(@Validated @RequestBody TransactionRequest transactionRequest) {

@@ -6,7 +6,6 @@ import com.stanbic.redbox.debit.service.dto.monnify.requests.OtpRequest;
 import com.stanbic.redbox.debit.service.dto.monnify.requests.TransferRequest;
 import com.stanbic.redbox.debit.service.dto.monnify.response.MonnifyResponse;
 import com.stanbic.redbox.debit.service.service.monnify.MonnifyService;
-import com.stanbic.redbox.debit.service.service.monnify.TokenService;
 import lombok.RequiredArgsConstructor;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
@@ -16,12 +15,6 @@ import org.springframework.web.bind.annotation.*;
 @RequiredArgsConstructor
 public class MonnifyController {
     private final MonnifyService monnifyService;
-    private final TokenService tokenService;
-
-    @PostMapping("/access")
-    public String getAccessToken() {
-        return tokenService.getAuthKey();
-    }
 
     @PostMapping("/initiate-transfer")
     public Object initiateTransfer(@RequestBody TransferRequest transferRequest) {
