@@ -17,21 +17,21 @@ import reactor.core.publisher.Mono;
 @AllArgsConstructor
 @Service
 public class HttpClientUtil {
-    private WebClient.Builder webClientBuildder;
+    private WebClient.Builder webClientBuilder;
     private final TokenService tokenService;
 
     public HttpClientUtil withBearerToken() {
-        webClientBuildder = webClientBuildder.defaultHeader("Authorization", tokenService.getBearerToken());
+        webClientBuilder = webClientBuilder.defaultHeader("Authorization", tokenService.getBearerToken());
         return this;
     }
 
     public HttpClientUtil withBasicAuth() {
-        webClientBuildder = webClientBuildder.defaultHeader("Authorization", tokenService.getAuthKey());
+        webClientBuilder = webClientBuilder.defaultHeader("Authorization", tokenService.getAuthKey());
         return this;
     }
 
     public ResponseEntity<MonnifyResponse> post(String url, Object requestBody) {
-        WebClient webClient = webClientBuildder.build();
+        WebClient webClient = webClientBuilder.build();
         return webClient.post()
                 .uri(url)
                 .contentType(MediaType.APPLICATION_JSON)
@@ -50,7 +50,7 @@ public class HttpClientUtil {
     }
 
     public ResponseEntity<MonnifyResponse> get(String url) {
-        WebClient webClient = webClientBuildder.build();
+        WebClient webClient = webClientBuilder.build();
         return webClient.get()
                 .uri(url)
                 .accept(MediaType.APPLICATION_JSON)

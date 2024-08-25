@@ -16,7 +16,7 @@ import org.springframework.web.util.UriComponentsBuilder;
 
 @RequiredArgsConstructor
 @Service
-public class MonnifyService {
+public class DisbursementService {
     @Value("${monnify.api.base-url}")
     private String baseUrl;
 
