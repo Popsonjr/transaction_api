@@ -1,9 +1,9 @@
 package com.stanbic.redbox.debit.service.service.monnify;
 
-import com.stanbic.redbox.debit.service.dto.monnify.requests.AuthorizeTransferRequest;
-import com.stanbic.redbox.debit.service.dto.monnify.requests.BulkTransferRequest;
-import com.stanbic.redbox.debit.service.dto.monnify.requests.OtpRequest;
-import com.stanbic.redbox.debit.service.dto.monnify.requests.TransferRequest;
+import com.stanbic.redbox.debit.service.dto.monnify.requests.disbursements.AuthorizeTransferRequest;
+import com.stanbic.redbox.debit.service.dto.monnify.requests.disbursements.BulkTransferRequest;
+import com.stanbic.redbox.debit.service.dto.monnify.requests.disbursements.OtpRequest;
+import com.stanbic.redbox.debit.service.dto.monnify.requests.disbursements.TransferRequest;
 import com.stanbic.redbox.debit.service.dto.monnify.response.MonnifyResponse;
 import com.stanbic.redbox.debit.service.service.HttpClientUtil;
 import com.stanbic.redbox.debit.service.util.TransactionReferenceGenerator;

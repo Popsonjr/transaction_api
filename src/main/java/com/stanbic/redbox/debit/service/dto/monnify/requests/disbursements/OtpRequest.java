@@ -1,4 +1,4 @@
-package com.stanbic.redbox.debit.service.dto.monnify.requests;
+package com.stanbic.redbox.debit.service.dto.monnify.requests.disbursements;
 
 import lombok.Data;
 
