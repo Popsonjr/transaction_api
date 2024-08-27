@@ -31,4 +31,14 @@ public class WalletService {
                 .toUriString();
         return httpClient.withBasicAuth().get(url, walletReference);
     }
+
+    public ResponseEntity<MonnifyResponse> handleGetWallets(Integer pageSize, Integer pageNo, String customerEmail) {
+        String url = UriComponentsBuilder.fromUriString(baseUrl)
+                .path("/api/v1/disbursements/wallet")
+                .queryParam("pageSize", pageSize)
+                .queryParam("pageNo", pageNo)
+                .build()
+                .toUriString();
+        return httpClient.withBasicAuth().get(url, customerEmail);
+    }
 }

@@ -23,4 +23,9 @@ public class WalletController {
     public ResponseEntity<MonnifyResponse> GetWalletBalByWalletReference(@RequestParam String walletReference, @PathVariable String accountNumber) {
         return walletService.handleGetWalletBalByWalletReference(walletReference, accountNumber);
     }
+
+    @GetMapping
+    public ResponseEntity<MonnifyResponse> GetWallets(@RequestParam Integer pageSize, @RequestParam Integer pageNo, @RequestParam String customerEmail) {
+        return walletService.handleGetWallets(pageSize, pageNo, customerEmail);
+    }
 }
