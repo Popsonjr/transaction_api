@@ -56,7 +56,7 @@ public class DisbursementService {
                 .queryParam("reference", reference)
                 .build()
                 .toUriString();
-        return httpClientUtil.withBearerToken().get(fullURL);
+        return httpClientUtil.withBearerToken().get(fullURL, null);
     }
 
     public ResponseEntity<MonnifyResponse> handleGetBulkTransferStatus(String batchReference) {
@@ -64,7 +64,7 @@ public class DisbursementService {
                 .path("/api/v2/disbursements/bulk/" + batchReference + "/transactions")
                 .build()
                 .toUriString();
-        return httpClientUtil.withBearerToken().get(fullURL);
+        return httpClientUtil.withBearerToken().get(fullURL, null);
     }
 
     public ResponseEntity<MonnifyResponse> handleListAllSingleTransfers(Integer pageSize, Integer pageNo) {
@@ -74,7 +74,7 @@ public class DisbursementService {
                 .queryParam("pageNo", pageNo)
                 .build()
                 .toUriString();
-        return httpClientUtil.withBearerToken().get(url);
+        return httpClientUtil.withBearerToken().get(url, null);
     }
 
     public ResponseEntity<MonnifyResponse> handleListAllBulkTransfers(Integer pageSize, Integer pageNo) {
@@ -84,7 +84,7 @@ public class DisbursementService {
                 .queryParam("pageNo", pageNo)
                 .build()
                 .toUriString();
-        return httpClientUtil.withBearerToken().get(url);
+        return httpClientUtil.withBearerToken().get(url, null);
     }
 
     public ResponseEntity<MonnifyResponse> handleGetBulkTransferTransactions(String batchReference, Integer pageSize, Integer pageNo) {
@@ -94,7 +94,7 @@ public class DisbursementService {
                 .queryParam("pageNo", pageNo)
                 .build()
                 .toUriString();
-        return httpClientUtil.withBearerToken().get(url);
+        return httpClientUtil.withBearerToken().get(url, null);
     }
 
 
@@ -104,7 +104,7 @@ public class DisbursementService {
                 .queryParam("accountNumber", accountNumber)
                 .build()
                 .toUriString();
-        return httpClientUtil.withBearerToken().get(url);
+        return httpClientUtil.withBearerToken().get(url, null);
     }
 
 //    @SneakyThrows

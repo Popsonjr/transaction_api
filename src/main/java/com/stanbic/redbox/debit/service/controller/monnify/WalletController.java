@@ -18,4 +18,9 @@ public class WalletController {
     public ResponseEntity<MonnifyResponse> createWallet(@RequestBody CreateWalletRequest walletRequest) {
         return walletService.handleCreateWallet(walletRequest);
     }
+
+    @GetMapping("/balance/{accountNumber}")
+    public ResponseEntity<MonnifyResponse> GetWalletBalByWalletReference(@RequestParam String walletReference, @PathVariable String accountNumber) {
+        return walletService.handleGetWalletBalByWalletReference(walletReference, accountNumber);
+    }
 }
