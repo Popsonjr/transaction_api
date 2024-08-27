@@ -41,4 +41,13 @@ public class WalletService {
                 .toUriString();
         return httpClient.withBasicAuth().get(url, customerEmail);
     }
+
+    public ResponseEntity<MonnifyResponse> handleGetWalletTransactions(String accountNumber) {
+        String url = UriComponentsBuilder.fromUriString(baseUrl)
+                .path("/api/v1/disbursements/wallet/transactions")
+                .queryParam("accountNumber", accountNumber)
+                .build()
+                .toUriString();
+        return httpClient.withBasicAuth().get(url, accountNumber);
+    }
 }

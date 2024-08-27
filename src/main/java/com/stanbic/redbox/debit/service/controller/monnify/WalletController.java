@@ -20,12 +20,17 @@ public class WalletController {
     }
 
     @GetMapping("/balance/{accountNumber}")
-    public ResponseEntity<MonnifyResponse> GetWalletBalByWalletReference(@RequestParam String walletReference, @PathVariable String accountNumber) {
+    public ResponseEntity<MonnifyResponse> getWalletBalByWalletReference(@RequestParam String walletReference, @PathVariable String accountNumber) {
         return walletService.handleGetWalletBalByWalletReference(walletReference, accountNumber);
     }
 
     @GetMapping
-    public ResponseEntity<MonnifyResponse> GetWallets(@RequestParam Integer pageSize, @RequestParam Integer pageNo, @RequestParam String customerEmail) {
+    public ResponseEntity<MonnifyResponse> getWallets(@RequestParam Integer pageSize, @RequestParam Integer pageNo, @RequestParam String customerEmail) {
         return walletService.handleGetWallets(pageSize, pageNo, customerEmail);
+    }
+
+    @GetMapping("/transactions/{accountNumber}")
+    public ResponseEntity<MonnifyResponse> getWalletTransactions(@PathVariable String accountNumber) {
+        return walletService.handleGetWalletTransactions(accountNumber);
     }
 }
